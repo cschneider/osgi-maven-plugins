@@ -150,19 +150,24 @@ public class IndexerMojo extends AbstractMojo {
 	private void discoverArtifacts(Map<File,ArtifactResult> files, List<DependencyNode> nodes, String parent)
 			throws ArtifactResolutionException, IOException {
 		for (DependencyNode node : nodes) {
-			if (!"jar".equals(node.getArtifact().getExtension())) {
+
+			System.out.println(node.getDependency());
+			if (!scopes.contains(node.getDependency().getScope())) {
 				continue;
 			}
-			ArtifactRequest request = new ArtifactRequest(node.getArtifact(), project.getRemoteProjectRepositories(), parent);
+			ArtifactRequest request = new ArtifactRequest(node.getArtifact(), project.getRemoteProjectRepositories(),
+					parent);
 			ArtifactResult resolvedArtifact = system.resolveArtifact(session, request);
-			File artifactFile = resolvedArtifact.getArtifact().getFile();
-			getLog().debug("Located file: " + artifactFile + " for artifact " + resolvedArtifact);
-			File baseDir = session.getLocalRepository().getBasedir();
-			String relativePath = artifactFile.getAbsolutePath().substring(baseDir.getAbsolutePath().length());
-			File destFile = new File(targetDir, relativePath);
-			Files.createDirectories(destFile.getParentFile().toPath());
-			Files.copy(artifactFile.toPath(), destFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-			files.put(destFile, resolvedArtifact);
+			if ("jar".equals(node.getArtifact().getExtension())) {
+				File artifactFile = resolvedArtifact.getArtifact().getFile();
+				getLog().debug("Located file: " + artifactFile + " for artifact " + resolvedArtifact);
+				File baseDir = session.getLocalRepository().getBasedir();
+				String relativePath = artifactFile.getAbsolutePath().substring(baseDir.getAbsolutePath().length());
+				File destFile = new File(targetDir, relativePath);
+				Files.createDirectories(destFile.getParentFile().toPath());
+				Files.copy(artifactFile.toPath(), destFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+				files.put(destFile, resolvedArtifact);
+			}
 			discoverArtifacts(files, node.getChildren(), node.getRequestContext());
 		}
 	}
