@@ -150,8 +150,6 @@ public class IndexerMojo extends AbstractMojo {
 	private void discoverArtifacts(Map<File,ArtifactResult> files, List<DependencyNode> nodes, String parent)
 			throws ArtifactResolutionException, IOException {
 		for (DependencyNode node : nodes) {
-
-			System.out.println(node.getDependency());
 			if (!scopes.contains(node.getDependency().getScope())) {
 				continue;
 			}
