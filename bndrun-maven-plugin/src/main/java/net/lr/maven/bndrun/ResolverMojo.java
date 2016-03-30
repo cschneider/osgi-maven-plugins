@@ -21,7 +21,10 @@ import biz.aQute.resolve.ProjectResolver;
 public class ResolverMojo extends AbstractMojo {
 
 	@Parameter(readonly = true, required = true)
-	private File						bndrun;
+	private File	bndrun;
+
+	@Parameter(defaultValue = "${project.build.directory}", readonly = true)
+	private File	targetDir;
 
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		try {
@@ -31,7 +34,8 @@ public class ResolverMojo extends AbstractMojo {
 			run.getRunbundles();
 			run.setRunBundles(runBundles);
 			Jar jar = run.getProjectLauncher().executable();
-			File jarFile = getExportJarFile(bndrun);
+			targetDir.mkdirs();
+			File jarFile = getExportJarFile();
 			jar.write(jarFile);
 			projectResolver.close();
 		} catch (Exception e) {
@@ -39,11 +43,11 @@ public class ResolverMojo extends AbstractMojo {
 		}
 	}
 
-	private static File getExportJarFile(File bndrun) {
+	private File getExportJarFile() {
 		String nameExt = bndrun.getName();
 		int pos = nameExt.lastIndexOf(".");
 		String name = nameExt.substring(0, pos);
-		File jarFile = new File(bndrun.getParentFile(), name + ".jar");
+		File jarFile = new File(targetDir, name + ".jar");
 		return jarFile;
 	}
 
