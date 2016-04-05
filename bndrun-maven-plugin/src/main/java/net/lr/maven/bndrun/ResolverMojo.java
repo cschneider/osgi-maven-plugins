@@ -28,6 +28,9 @@ public class ResolverMojo extends AbstractMojo {
 
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		try {
+			if (!bndrun.exists()) {
+				throw new MojoExecutionException("Could not find bnd run file " + bndrun);
+			}
 			StandaloneRun run = new StandaloneRun(bndrun);
 			ProjectResolver projectResolver = new ProjectResolver(run);
 			List<Container> runBundles = projectResolver.getRunBundles();
