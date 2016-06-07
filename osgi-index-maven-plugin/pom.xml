@@ -7,6 +7,10 @@
 	<version>1.0.0-SNAPSHOT</version>
 	<packaging>maven-plugin</packaging>
 
+	<properties>
+		<bnd.version>3.2.0</bnd.version>
+	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.maven</groupId>
@@ -31,7 +35,7 @@
 		<dependency>
 			<groupId>biz.aQute.bnd</groupId>
 			<artifactId>org.osgi.impl.bundle.repoindex.cli</artifactId>
-			<version>3.1.0</version>
+			<version>${bnd.version}</version>
 		</dependency>
 	</dependencies>
 
